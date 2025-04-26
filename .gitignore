@@ -1,8 +1,14 @@
-db.sqlite3
+# Python
 *.pyc
+__pycache__/
+
+# Mac OS
 .DS_Store
+
+# Django
+db.sqlite3
 media/
+
+# Environments
 venv/
 .venv/
-
-
