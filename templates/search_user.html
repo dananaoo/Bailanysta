@@ -1,21 +1,125 @@
-               
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Search Results</title>
 
-                <h1>Search Results for "{{ query }}"</h1>
-                <div class="container">
-                    <h2>User Profiles</h2>
-                    
-                    <table class="table">
-                        
-                        <tbody>
-                            {% for user in users %}
-                            <tr>
-                                <td><h1><strong><a href="/profile/{{user.user.username}}">@{{user.user.username}}</a> </strong></h1></td>
-                                
-                            </tr>
-                            {% endfor %}
-                            
-                            
-                        </tbody>
-                    </table>
+    <!-- Bootstrap и кастомные стили -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <script src="https://kit.fontawesome.com/cb792c0850.js" crossorigin="anonymous"></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'css/app.css' %}">
+
+    <style>
+        .sidebar {
+            background-color: #f8f9fa;
+            height: 100vh;
+            color: black;
+        }
+        .profile-pic {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+        a {
+            color: black;
+        }
+    </style>
+</head>
+<body>
+<div class="container-fluid">
+    <div class="row">
+        <!-- Sidebar -->
+        <nav class="col-md-2 d-none d-md-block sidebar" style="position: fixed;">
+            <div class="text-center mt-3">
+                <img src="{{profile.profileimg.url}}" alt="Profile Picture" class="profile-pic">
+                <h4 class="mt-2"><a href="/profile/{{user}}" style="text-decoration:none;">@{{user}}</a></h4>
+            </div>
+            <ul class="nav flex-column mt-4">
+                <li class="nav-item">
+                    <a class="nav-link active" href="/">
+                        <i class="fa-solid fa-house mr-1"></i> Home
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/explore">
+                        <i class="fa-solid fa-compass mr-1"></i> Explore
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <form method="get" action="{% url 'search_results' %}" class="d-flex px-3 mt-2">
+                        <input type="text" name="q" class="form-control form-control-sm" placeholder="Search..." required>
+                        <button type="submit" class="btn btn-sm btn-outline-secondary ml-2">
+                            <i class="fa-solid fa-magnifying-glass"></i>
+                        </button>
+                    </form>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#" data-bs-toggle="modal" data-bs-target="#exampleModal">
+                        <i class="fa-solid fa-circle-plus mr-1"></i> Create Post
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/profile/{{user}}">
+                        <i class="fa-solid fa-user mr-1"></i> Profile
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/logoutt">
+                        <i class="fa-solid fa-right-from-bracket mr-1"></i> Logout
+                    </a>
+                </li>
+            </ul>
+            
+        </nav>
+
+        <!-- Main content -->
+        <main role="main" class="col-md-9 ml-sm-auto col-lg-10 px-md-4 offset-md-2">
+            <h1 class="mt-4">Search Results for "{{ query }}"</h1>
+
+            <h2>User Profiles</h2>
+            <table class="table">
+                <tbody>
+                    {% for user in users %}
+                    <tr>
+                        <td>
+                            <strong><a href="/profile/{{ user.user.username }}">@{{ user.user.username }}</a></strong>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr><td>No users found.</td></tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+
+            <hr>
+
+            <h2>Posts</h2>
+            <div class="row">
+                {% for post in posts %}
+                <div class="col-md-4 mb-4">
+                    <div class="card">
+                        <img src="{{ post.image.url }}" class="card-img-top" alt="Post image" style="object-fit: cover; height: 300px;">
+                        <div class="card-body">
+                            <h5 class="card-title">@{{ post.user }}</h5>
+                            <p class="card-text">{{ post.caption }}</p>
+                            <p class="card-text"><small class="text-muted">{{ post.created_at }}</small></p>
+                        </div>
+                    </div>
                 </div>
-                
+                {% empty %}
+                <p>No posts found.</p>
+                {% endfor %}
+            </div>
+        </main>
+    </div>
+</div>
+
+<!-- Scripts -->
+<script src="{% static 'js/app.js'%}"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

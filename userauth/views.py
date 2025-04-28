@@ -208,14 +208,24 @@ def search_results(request):
     query = request.GET.get('q')
 
     users = Profile.objects.filter(user__username__icontains=query)
-    posts = Post.objects.filter(caption__icontains=query)
+
+    posts = Post.objects.filter(
+        Q(caption__icontains=query) | Q(caption__icontains=f"#{query}")
+    ).order_by('-created_at')
+
+    # 💡 Добавим текущий профиль пользователя
+    profile = Profile.objects.get(user=request.user)
 
     context = {
         'query': query,
         'users': users,
         'posts': posts,
+        'profile': profile, 
+        'user': request.user
     }
     return render(request, 'search_user.html', context)
+
+
 
 def home_post(request,id):
     post=Post.objects.get(id=id)
